@@ -1,11 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+import datetime
 
 class Ichthys:
     def __init__(self):
+        self.current_time = datetime.datetime.now()
+        self.current_month = "{:02d}".format(self.current_time.month)
+        self.current_day = "{:02d}".format(self.current_time.day)
+        self.current_year = str(self.current_time.year % 100)
         self.url = "https://www.biblegateway.com/passage/?search="
-        self.readings_url = "https://bible.usccb.org/daily-bible-reading"
+        self.readings_url = "https://bible.usccb.org/bible/readings/" + self.current_month + self.current_day + self.current_year + ".cfm"
     def readVerse(self, verse):
         full_request = self.url + verse + "&version=RSVCE"
         response = requests.get(full_request)
@@ -58,7 +63,7 @@ class Ichthys:
         content = response.content
         soup = BeautifulSoup(content, "html.parser")
 
-        readings_info = "Taken from: https://bible.usccb.org/daily-bible-reading"
+        readings_info = "Taken from: " + self.readings_url
         readings_content = soup.find_all('div', class_='wr-block b-verse bg-white padding-bottom-m')
 
         for reading in range(len(readings_content)):
