@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import scraper
 import json
+import os
 
 ichthys = scraper.Ichthys()
 
@@ -99,4 +100,4 @@ async def dailyreadings(ctx):
     color=discord.Color.blue())
 
     await ctx.send(embed=embed)
-client.run('ODc0NDc4NTU0NTA1Njg3MTAw.YRHjng.3yTJa7sbgelgJVvrYuAcAmU6GMY')
+client.run(os.environ['BOT_TOKEN'])
