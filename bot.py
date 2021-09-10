@@ -3,6 +3,7 @@ from discord.ext import commands
 import scraper
 import json
 import os
+import DiscordUtils
 
 ichthys = scraper.Ichthys()
 
@@ -99,5 +100,30 @@ async def dailyreadings(ctx):
     description= readings,
     color=discord.Color.blue())
 
-    await ctx.send(embed=embed)
+    readings_1 = discord.Embed(
+    title="Daily Readings",
+    description=readings[0] + readings[1],
+    color=discord.Color.blue()
+    )
+    readings_2 = discord.Embed(
+    title="Daily Readings",
+    description=readings[2],
+    color=discord.Color.blue()
+    )
+    readings_3 = discord.Embed(
+    title="Daily Readings",
+    description=readings[3],
+    color=discord.Color.blue()
+    )
+    readings_4 = discord.Embed(
+    title="Daily Readings",
+    description=readings[4],
+    color=discord.Color.blue()
+    )
+    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+    paginator.add_reaction('⏪', "back")
+    paginator.add_reaction('⏩', "next")
+    embeds = [readings_1, readings_2, readings_3, readings_4]
+    await paginator.run(embeds)
+
 client.run(os.environ['BOT_TOKEN'])

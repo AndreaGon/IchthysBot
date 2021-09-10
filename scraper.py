@@ -13,6 +13,7 @@ class Ichthys:
         self.current_year = str(self.current_time.year % 100)
         self.url = "https://www.biblegateway.com/passage/?search="
         self.readings_url = "https://bible.usccb.org/bible/readings/" + self.current_month + self.current_day + self.current_year + ".cfm"
+
     def readVerse(self, verse):
         full_request = self.url + verse + "&version=RSVCE"
         response = requests.get(full_request)
@@ -53,10 +54,9 @@ class Ichthys:
         content = response.content
         soup = BeautifulSoup(content, "html.parser")
 
-        readings_info = "Taken from: " + self.readings_url
+        readings_info = ["Taken from: " + self.readings_url]
         readings_content = soup.find_all('div', class_='wr-block b-verse bg-white padding-bottom-m')
 
         for reading in range(len(readings_content)):
-            readings_info += readings_content[reading].text
-
+            readings_info.append(readings_content[reading].text)
         return readings_info
