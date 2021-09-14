@@ -131,5 +131,4 @@ async def dailyreadings(ctx):
     embeds = [readings_1, readings_2, readings_3, readings_4]
     await paginator.run(embeds)
 
-#client.run(os.environ['BOT_TOKEN'])
-client.run('ODg1NzI3MzQ3MTA0NDQ0NDU2.YTrP3w.XL0D29eDqlBWaNWY91YlBn3U9AY')
+client.run(os.environ['BOT_TOKEN'])
