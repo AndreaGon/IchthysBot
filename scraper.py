@@ -47,7 +47,15 @@ class Ichthys:
         with open("prayers.json") as f:
             prayers = json.load(f, strict=False)
 
-        return prayers[prayer]
+        with open("prayers-latin.json") as f:
+            prayers_latin = json.load(f, strict=False)
+
+        if prayer in prayers:
+            return prayers[prayer]
+        elif prayer in prayers_latin:
+            return prayers_latin[prayer]
+        else:
+            return "Prayer not found"
 
     def dailyReadings(self):
         response = requests.get(self.readings_url)

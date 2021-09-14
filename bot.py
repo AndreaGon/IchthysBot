@@ -42,11 +42,21 @@ async def ichthyshelp(ctx, *, command = ""):
         )
         list_of_prayers = ""
 
+        #Read list of prayers (non latin)
         with open("prayers.json") as f:
             prayers = json.load(f, strict=False)
 
         prayers = prayers.keys()
         for prayer in prayers:
+            list_of_prayers += "+pray " + prayer + "\n"
+
+        list_of_prayers += "\n**Latin Prayers**\n"
+        #Read list of latin prayers
+        with open("prayers-latin.json") as f:
+            prayers_latin = json.load(f, strict=False)
+
+        prayers_latin = prayers_latin.keys()
+        for prayer in prayers_latin:
             list_of_prayers += "+pray " + prayer + "\n"
 
         embed.add_field(name="**Command Structure**", value="+pray <prayer-title>", inline=False)
@@ -95,11 +105,6 @@ async def pray(ctx, *title):
 @client.command()
 async def dailyreadings(ctx):
     readings = ichthys.dailyReadings()
-    embed = discord.Embed(
-    title="Daily Readings",
-    description= readings,
-    color=discord.Color.blue())
-
     readings_1 = discord.Embed(
     title="Daily Readings",
     description=readings[0] + readings[1],
@@ -126,4 +131,5 @@ async def dailyreadings(ctx):
     embeds = [readings_1, readings_2, readings_3, readings_4]
     await paginator.run(embeds)
 
-client.run(os.environ['BOT_TOKEN'])
+#client.run(os.environ['BOT_TOKEN'])
+client.run('ODg1NzI3MzQ3MTA0NDQ0NDU2.YTrP3w.XL0D29eDqlBWaNWY91YlBn3U9AY')
