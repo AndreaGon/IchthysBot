@@ -128,7 +128,17 @@ async def dailyreadings(ctx):
     paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
     paginator.add_reaction('⏪', "back")
     paginator.add_reaction('⏩', "next")
-    embeds = [readings_1, readings_2, readings_3, readings_4]
+
+    if len(readings) == 6:
+        readings_5 = discord.Embed(
+        title="Daily Readings",
+        description=readings[5],
+        color=discord.Color.blue()
+        )
+        embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
+    else:
+        embeds = [readings_1, readings_2, readings_3, readings_4]
+    print(len(readings))
     await paginator.run(embeds)
 
 client.run(os.environ['BOT_TOKEN'])
