@@ -3,11 +3,13 @@ from bs4 import BeautifulSoup
 import json
 import datetime
 import pytz
+import os
 
 class Ichthys:
     def __init__(self):
         self.timezone = pytz.timezone('Asia/Singapore')
-        self.current_time = datetime.datetime.now(self.timezone)
+        self.date_time = datetime.datetime.now()
+        self.current_time = self.date_time.replace(tzinfo=self.timezone)
         self.current_month = "{:02d}".format(self.current_time.month)
         self.current_day = "{:02d}".format(self.current_time.day)
         self.current_year = str(self.current_time.year % 100)
