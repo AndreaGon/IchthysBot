@@ -3,6 +3,7 @@ from discord.ext import commands
 import scraper
 import json
 import os
+import DiscordUtils
 
 ichthys = scraper.Ichthys()
 
@@ -18,13 +19,26 @@ async def ichthyshelp(ctx, *, command = ""):
 
     if command == "":
         embed = discord.Embed(
-            title="Ichthys Bot Help Commands",
-            description = "This contains a list of Ichthys bot commands",
+            title="Ichthys Bot",
+            description = "Your all-in-one Catholic Discord Bot",
             color=discord.Color.blue()
         )
-        embed.add_field(name="**+ichthyshelp read**", value="Show the commands available for +read", inline=False)
-        embed.add_field(name="**+ichthyshelp pray**", value="Show the commands available for +pray", inline=False)
-        embed.add_field(name="**+ichthyshelp dailyreadings**", value="Show the commands available for +dailyreadings", inline=False)
+        embed.add_field(
+            name="**🤖 Help Commands**\n",
+            value="`+ichthyshelp read` - Show commands available for +read \n `+ichthyshelp pray` - Show commands available for +pray \n `+ichthyshelp read` - Show commands available for +dailyreadings",
+            inline=False
+        )
+        embed.add_field(
+            name="**🔗 Links**\n",
+            value="**Github** - https://github.com/AndreaGon/IchthysBot",
+            inline=False
+        )
+        embed.set_footer(
+            text="Made with ❤ by AndreaGon"
+        )
+        #embed.add_field(name="**+ichthyshelp read**", value="Show the commands available for +read", inline=False)
+        #embed.add_field(name="**+ichthyshelp pray**", value="Show the commands available for +pray", inline=False)
+        #embed.add_field(name="**+ichthyshelp dailyreadings**", value="Show the commands available for +dailyreadings", inline=False)
     elif command == "read":
         embed = discord.Embed(
             title="Ichthys Read Command",
@@ -41,11 +55,21 @@ async def ichthyshelp(ctx, *, command = ""):
         )
         list_of_prayers = ""
 
+        #Read list of prayers (non latin)
         with open("prayers.json") as f:
             prayers = json.load(f, strict=False)
 
         prayers = prayers.keys()
         for prayer in prayers:
+            list_of_prayers += "+pray " + prayer + "\n"
+
+        list_of_prayers += "\n**Latin Prayers**\n"
+        #Read list of latin prayers
+        with open("prayers-latin.json") as f:
+            prayers_latin = json.load(f, strict=False)
+
+        prayers_latin = prayers_latin.keys()
+        for prayer in prayers_latin:
             list_of_prayers += "+pray " + prayer + "\n"
 
         embed.add_field(name="**Command Structure**", value="+pray <prayer-title>", inline=False)
@@ -94,10 +118,39 @@ async def pray(ctx, *title):
 @client.command()
 async def dailyreadings(ctx):
     readings = ichthys.dailyReadings()
-    embed = discord.Embed(
+    readings_1 = discord.Embed(
     title="Daily Readings",
-    description= readings,
-    color=discord.Color.blue())
+    description=readings[0] + readings[1],
+    color=discord.Color.blue()
+    )
+    readings_2 = discord.Embed(
+    title="Daily Readings",
+    description=readings[2],
+    color=discord.Color.blue()
+    )
+    readings_3 = discord.Embed(
+    title="Daily Readings",
+    description=readings[3],
+    color=discord.Color.blue()
+    )
+    readings_4 = discord.Embed(
+    title="Daily Readings",
+    description=readings[4],
+    color=discord.Color.blue()
+    )
+    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=False)
+    paginator.add_reaction('⏪', "back")
+    paginator.add_reaction('⏩', "next")
 
-    await ctx.send(embed=embed)
+    if len(readings) == 6:
+        readings_5 = discord.Embed(
+        title="Daily Readings",
+        description=readings[5],
+        color=discord.Color.blue()
+        )
+        embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
+    else:
+        embeds = [readings_1, readings_2, readings_3, readings_4]
+    await paginator.run(embeds)
+
 client.run(os.environ['BOT_TOKEN'])
