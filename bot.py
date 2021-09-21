@@ -19,13 +19,26 @@ async def ichthyshelp(ctx, *, command = ""):
 
     if command == "":
         embed = discord.Embed(
-            title="Ichthys Bot Help Commands",
-            description = "This contains a list of Ichthys bot commands",
+            title="Ichthys Bot",
+            description = "Your all-in-one Catholic Discord Bot",
             color=discord.Color.blue()
         )
-        embed.add_field(name="**+ichthyshelp read**", value="Show the commands available for +read", inline=False)
-        embed.add_field(name="**+ichthyshelp pray**", value="Show the commands available for +pray", inline=False)
-        embed.add_field(name="**+ichthyshelp dailyreadings**", value="Show the commands available for +dailyreadings", inline=False)
+        embed.add_field(
+            name="**🤖 Help Commands**\n",
+            value="`+ichthyshelp read` - Show commands available for +read \n `+ichthyshelp pray` - Show commands available for +pray \n `+ichthyshelp read` - Show commands available for +dailyreadings",
+            inline=False
+        )
+        embed.add_field(
+            name="**🔗 Links**\n",
+            value="**Github** - https://github.com/AndreaGon/IchthysBot",
+            inline=False
+        )
+        embed.set_footer(
+            text="Made with ❤ by AndreaGon"
+        )
+        #embed.add_field(name="**+ichthyshelp read**", value="Show the commands available for +read", inline=False)
+        #embed.add_field(name="**+ichthyshelp pray**", value="Show the commands available for +pray", inline=False)
+        #embed.add_field(name="**+ichthyshelp dailyreadings**", value="Show the commands available for +dailyreadings", inline=False)
     elif command == "read":
         embed = discord.Embed(
             title="Ichthys Read Command",
@@ -125,7 +138,7 @@ async def dailyreadings(ctx):
     description=readings[4],
     color=discord.Color.blue()
     )
-    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=True)
+    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=False)
     paginator.add_reaction('⏪', "back")
     paginator.add_reaction('⏩', "next")
 
@@ -138,7 +151,6 @@ async def dailyreadings(ctx):
         embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
     else:
         embeds = [readings_1, readings_2, readings_3, readings_4]
-    print(len(readings))
     await paginator.run(embeds)
 
 client.run(os.environ['BOT_TOKEN'])
