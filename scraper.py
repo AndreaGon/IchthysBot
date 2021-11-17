@@ -31,9 +31,11 @@ class Ichthys:
             if verse.name == 'h3':
                 verses_format.append("\n"+ "**" + verse.text + "**" + "\n\n")
             elif verse.name == 'p':
-                ignore_sup_tag = verse.find('sup', class_="footnote")
-                if(ignore_sup_tag == None):
-                    verses_format.append(verse.text + "\n")
+                 ignore_sup_tag = verse.find('sup', class_="footnote")
+                 if ignore_sup_tag != None:
+                     ignore_sup_tag.extract()
+                 verses_format.append(verse.text + "\n")
+
 
         verses_format.append("\n\nRead from the website: \n" + full_request)
         if len(verses_format) > 2000:
