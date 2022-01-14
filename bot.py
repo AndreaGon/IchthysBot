@@ -25,7 +25,7 @@ async def ichthyshelp(ctx, *, command = ""):
         )
         embed.add_field(
             name="**🤖 Help Commands**\n",
-            value="`+ichthyshelp read` - Show commands available for +read \n `+ichthyshelp pray` - Show commands available for +pray \n `+ichthyshelp read` - Show commands available for +dailyreadings",
+            value="`+ichthyshelp read` - Show commands available for +read \n `+ichthyshelp pray` - Show commands available for +pray \n `+ichthyshelp dailyreadings` - Show commands available for +dailyreadings",
             inline=False
         )
         embed.add_field(
