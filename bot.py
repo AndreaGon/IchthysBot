@@ -5,6 +5,8 @@ import json
 import os
 import DiscordUtils
 
+import asyncio
+
 ichthys = scraper.Ichthys()
 
 client = commands.Bot(command_prefix = "+")
@@ -138,9 +140,6 @@ async def dailyreadings(ctx):
     description=readings[4],
     color=discord.Color.blue()
     )
-    paginator = DiscordUtils.Pagination.CustomEmbedPaginator(ctx, remove_reactions=False)
-    paginator.add_reaction('⏪', "back")
-    paginator.add_reaction('⏩', "next")
 
     if len(readings) == 6:
         readings_5 = discord.Embed(
@@ -151,6 +150,35 @@ async def dailyreadings(ctx):
         embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
     else:
         embeds = [readings_1, readings_2, readings_3, readings_4]
-    await paginator.run(embeds)
+
+    pages = len(embeds)
+    current_page = 1
+
+    message = await ctx.send(embed= embeds[current_page-1])
+
+    await message.add_reaction("◀️")
+    await message.add_reaction("▶️")
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
+
+    while True:
+        try:
+            reaction, user = await client.wait_for("reaction_add", timeout=86400, check=check)
+
+            if str(reaction.emoji) == "▶️" and current_page != pages:
+                current_page += 1
+                await message.edit(embed=embeds[current_page-1])
+                await message.remove_reaction(reaction, user)
+
+            elif str(reaction.emoji) == "◀️" and current_page > 1:
+                current_page -= 1
+                await message.edit(embed=embeds[current_page-1])
+                await message.remove_reaction(reaction, user)
+
+            else:
+                await message.remove_reaction(reaction, user)
+        except asyncio.TimeoutError:
+            break
 
 client.run(os.environ['BOT_TOKEN'])
