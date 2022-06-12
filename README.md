@@ -30,7 +30,7 @@ cd IchthysBot
 #Install modules
 pip install -r requirements.txt
 ```
-# Special Thanks
+# Special Thanks 🙏
 - To my local Catholic Bible Study youth group, my inspiration for IchthysBot
 - To my family for supporting this project
 - And to you, for being a part of IchthysBot
