@@ -1,0 +1,49 @@
+en:
+  about: Your all-in-one Catholic Discord Bot
+  help: Help Commands
+  helpshortdesc: Show commands available for
+  helpreaddesc: Returns a Bible verse based on the user's request
+  helppraydesc: Returns common Catholic prayers
+  helpreadingsdesc: Returns today's bible readings
+  helptranslationsdesc: Sets the bot's language
+  links: Links
+
+  translations: List of all Available Translations
+  commandStructure: Command Structure
+  exampleCommand: Example Command
+  listOfAvailablePrayers: List of Available Prayers
+
+  commandNotFound: Command Not Found
+  commandNotFoundDesc: Sorry, but the command you entered does not exist
+
+  bibleVerseTitle: Bible Verse
+  prayerTitle: Prayer
+  dailyReadingsTitle: Daily Readings
+
+  settingLocaleLang: Setting Locale Language
+  botLanguageSet: Bot language set to
+
+ph:
+  about: Ang iyong all-in-one Discord Bot para sa mga Katoliko
+  help: Mga Makakatulong na Commands
+  helpshortdesc: Ipakita ang mga commands na meron para sa
+  helpreaddesc: Ipinapahayag ang talata sa Bibliya batay sa kahilingan
+  helppraydesc: Ipinapahayag ang mga Katolikong dasal
+  helpreadingsdesc: Ipinapahayag ang mga araw-araw na Pagbasa mula sa Bibliya
+  helptranslationsdesc: Palitan ang lenguahe ng bot
+  links: Mga Links
+
+  translations: Listahan ng mga Available na Translations
+  commandStructure: Istraktura ng Command
+  exampleCommand: Halimbawang Command
+  listOfAvailablePrayers: Listahan ng mga Dasal
+
+  commandNotFound: Command Not Found
+  commandNotFoundDesc: Pasenya na, pero ang command na yan ay hindi pwedeng gamitin
+
+  bibleVerseTitle: Talata sa Bibliya
+  prayerTitle: Dasal
+  dailyReadingsTitle: Araw-araw na Pagbasa
+
+  settingLocaleLang: Pagpalit ng Lenguahe
+  botLanguageSet: Ang lenguahe ng bot ay pinalitan ng
