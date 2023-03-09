@@ -21,6 +21,7 @@ i18n.set('filename_format', 'tl.yml')
 
 @client.event
 async def on_ready():
+    print(current_directory)
     print("Bot is ready")
 
 @client.command()
