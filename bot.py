@@ -39,7 +39,7 @@ async def ichthyshelp(ctx, *, command = ""):
         )
         embed.add_field(
             name="**🔗 " + i18n.t("links") + " **\n",
-            value="**Github** - https://github.com/AndreaGon/IchthysBot",
+            value="**Github** - https://github.com/AndreaGon/IchthysBot" + "\n **Love Offerings** - https://www.buymeacoffee.com/andreagon",
             inline=False
         )
         embed.set_footer(

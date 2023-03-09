@@ -12,10 +12,10 @@ en:
   commandStructure: Command Structure
   exampleCommand: Example Command
   listOfAvailablePrayers: List of Available Prayers
-  
+
   commandNotFound: Command Not Found
   commandNotFoundDesc: Sorry, but the command you entered does not exist
-  
+
   bibleVerseTitle: Bible Verse
   prayerTitle: Prayer
   dailyReadingsTitle: Daily Readings
