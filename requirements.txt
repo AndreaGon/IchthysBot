@@ -6,3 +6,4 @@ json5==0.9.5
 jsonschema==3.2.0
 pytz==2020.5
 requests==2.24.0
+i18n==0.2
