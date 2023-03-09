@@ -13,7 +13,7 @@ ichthys = scraper.Ichthys()
 
 client = commands.Bot(command_prefix = "+")
 
-current_directory = os.getcwd()
+current_directory = os.path.dirname(os.path.abspath(__file__))
 
 #For translation
 i18n.load_path.append(current_directory + '/locale')
