@@ -7,8 +7,6 @@ import DiscordUtils
 
 import asyncio
 
-import i18n
-
 ichthys = scraper.Ichthys()
 
 client = commands.Bot(command_prefix = "+")
@@ -28,19 +26,20 @@ async def on_ready():
 @client.command()
 async def ichthyshelp(ctx, *, command = ""):
 
+
     if command == "":
         embed = discord.Embed(
             title="Ichthys Bot",
-            description = i18n.t("about"),
+            description = "Your all-in-one Catholic Discord Bot",
             color=discord.Color.blue()
         )
         embed.add_field(
-            name="**🤖 " + i18n.t("help") + " **\n",
-            value="`+ichthyshelp read` -" + i18n.t("helpshortdesc") + " +read \n `+ichthyshelp pray` - " + i18n.t("helpshortdesc") + " +pray \n `+ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " +dailyreadings \n `+ichthyshelp setlocale`" + i18n.t("helpshortdesc") + " +setlocale",
+            name="**🤖 Help Commands**\n",
+            value="`+ichthyshelp read` - Show commands available for +read \n `+ichthyshelp pray` - Show commands available for +pray \n `+ichthyshelp dailyreadings` - Show commands available for +dailyreadings",
             inline=False
         )
         embed.add_field(
-            name="**🔗 " + i18n.t("links") + " **\n",
+            name="**🔗 Links**\n",
             value="**Github** - https://github.com/AndreaGon/IchthysBot" + "\n **Love Offerings** - https://www.buymeacoffee.com/andreagon",
             inline=False
         )
@@ -53,15 +52,15 @@ async def ichthyshelp(ctx, *, command = ""):
     elif command == "read":
         embed = discord.Embed(
             title="Ichthys Read Command",
-            description = i18n.t("helpreaddesc"),
+            description = "Returns a bible verse based on the user's request",
             color=discord.Color.blue()
         )
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+read <bible-book><verse>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+read John 3:16", inline=False)
+        embed.add_field(name="**Command Structure**", value="+read <bible-book><verse>", inline=False)
+        embed.add_field(name="**Example Command**", value="+read John 3:16", inline=False)
     elif command == "pray":
         embed = discord.Embed(
             title="Ichthys Pray Command",
-            description = i18n.t("helppraydesc"),
+            description = "Returns common Catholic prayers",
             color=discord.Color.blue()
         )
         list_of_prayers = ""
@@ -83,44 +82,23 @@ async def ichthyshelp(ctx, *, command = ""):
         for prayer in prayers_latin:
             list_of_prayers += "+pray " + prayer + "\n"
 
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+pray <prayer-title>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+pray hail mary", inline=False)
-        embed.add_field(name="**" + i18n.t("listOfAvailablePrayers") + "**", value=list_of_prayers, inline=False)
+        embed.add_field(name="**Command Structure**", value="+pray <prayer-title>", inline=False)
+        embed.add_field(name="**Example Command**", value="+pray hail mary", inline=False)
+        embed.add_field(name="**List of Available Prayers**", value=list_of_prayers, inline=False)
 
     elif command == "dailyreadings":
         embed = discord.Embed(
             title="Ichthys Daily Readings Command",
-            description = i18n.t("helpreadingsdesc"),
+            description = "Returns today's bible readings",
             color=discord.Color.blue()
         )
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+dailyreadings", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+dailyreadings", inline=False)
-
-    elif command == "setlocale":
-        embed = discord.Embed(
-            title="Ichthys Set Locale Command",
-            description = i18n.t("helptranslationsdesc"),
-            color=discord.Color.blue()
-        )
-
-        list_of_locale = ""
-
-
-        #Read list of latin prayers
-        with open("locale/available_locale.json") as f:
-            available_locale = json.load(f, strict=False)
-
-        locale_keys = available_locale.keys()
-        for locale in locale_keys:
-            list_of_locale += "+setlocale " + locale + " - " + available_locale[locale] + "\n"
-
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+setlocale <translation>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value=list_of_locale, inline=False)
+        embed.add_field(name="**Command Structure**", value="+dailyreadings", inline=False)
+        embed.add_field(name="**Example Command**", value="+dailyreadings", inline=False)
 
     else:
         embed = discord.Embed(
-            title=i18n.t("commandNotFound"),
-            description = i18n.t("commandNotFoundDesc"),
+            title="Command Not Found",
+            description = "Sorry, but the command you entered does not exist",
             color=discord.Color.blue()
         )
 
@@ -131,7 +109,7 @@ async def ichthyshelp(ctx, *, command = ""):
 async def read(ctx, book: str, verse: str):
     read_verse = ichthys.readVerse(book + verse)
     embed = discord.Embed(
-    title=i18n.t("bibleVerseTitle"),
+    title="Bible Verse",
     description = read_verse,
     color=discord.Color.blue()
     )
@@ -141,7 +119,7 @@ async def read(ctx, book: str, verse: str):
 async def pray(ctx, *title):
     prayer = ichthys.readPrayer(" ".join(title[:]).lower())
     embed = discord.Embed(
-    title=i18n.t("prayerTitle"),
+    title="Prayer",
     description = prayer,
     color=discord.Color.blue()
     )
@@ -151,29 +129,29 @@ async def pray(ctx, *title):
 async def dailyreadings(ctx):
     readings = ichthys.dailyReadings()
     readings_1 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
+    title="Daily Readings",
     description=readings[0] + readings[1],
     color=discord.Color.blue()
     )
     readings_2 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
+    title="Daily Readings",
     description=readings[2],
     color=discord.Color.blue()
     )
     readings_3 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
+    title="Daily Readings",
     description=readings[3],
     color=discord.Color.blue()
     )
     readings_4 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
+    title="Daily Readings",
     description=readings[4],
     color=discord.Color.blue()
     )
 
     if len(readings) == 6:
         readings_5 = discord.Embed(
-        title=i18n.t("dailyReadingsTitle"),
+        title="Daily Readings",
         description=readings[5],
         color=discord.Color.blue()
         )
@@ -210,20 +188,5 @@ async def dailyreadings(ctx):
                 await message.remove_reaction(reaction, user)
         except asyncio.TimeoutError:
             break
-
-
-
-@client.command()
-@commands.has_permissions(administrator=True)
-async def setlocale(ctx, locale:str = "en"):
-
-    i18n.set('locale', locale)
-    embed = discord.Embed(
-    title=i18n.t("settingLocaleLang"),
-    description= i18n.t("botLanguageSet") + " " + locale,
-    color=discord.Color.blue()
-    )
-
-    await ctx.send(embed=embed)
 
 client.run(os.environ['BOT_TOKEN'])
