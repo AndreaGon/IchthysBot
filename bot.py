@@ -13,13 +13,16 @@ ichthys = scraper.Ichthys()
 
 client = commands.Bot(command_prefix = "+")
 
+current_directory = os.path.dirname(os.path.abspath(__file__))
+local_directory = os.path.join(current_directory, "locale")
+
 #For translation
-i18n.load_path.append("locale")
-i18n.set('filename_format', 'tl.yml')
+i18n.load_path.append(local_directory)
+i18n.set('filename_format', 'yml')
+
 
 @client.event
 async def on_ready():
-    print(i18n.t("help"))
     print("Bot is ready")
 
 @client.command()
@@ -28,7 +31,7 @@ async def ichthyshelp(ctx, *, command = ""):
     if command == "":
         embed = discord.Embed(
             title="Ichthys Bot",
-            description = i18n.t("help"),
+            description = i18n.t("about"),
             color=discord.Color.blue()
         )
         embed.add_field(
