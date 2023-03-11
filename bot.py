@@ -13,11 +13,13 @@ ichthys = scraper.Ichthys()
 
 client = commands.Bot(command_prefix = "+")
 
-current_directory = os.getcwd()
+current_directory = os.path.dirname(os.path.abspath(__file__))
+local_directory = os.path.join(current_directory, "locale")
 
 #For translation
-i18n.load_path.append(current_directory + '/locale')
-i18n.set('filename_format', 'tl.yml')
+i18n.load_path.append(local_directory)
+i18n.set('filename_format', 'yml')
+
 
 @client.event
 async def on_ready():
