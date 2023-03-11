@@ -28,7 +28,7 @@ async def ichthyshelp(ctx, *, command = ""):
     if command == "":
         embed = discord.Embed(
             title="Ichthys Bot",
-            description = i18n.t("about"),
+            description = i18n.t("help"),
             color=discord.Color.blue()
         )
         embed.add_field(
