@@ -1,28 +1,42 @@
-import discord
+#Main Ichthys backbone
+import main.features as features
+import main.ui_helper as ui_helper
+
+#Discord.py modules
 from discord.ext import commands
-import scraper
-import json
-import os
+import Paginator
+import discord
 import DiscordUtils
 
+#Other modules
+import json
+import os
 import asyncio
-
 import i18n
 
-ichthys = scraper.Ichthys()
+#Init Features
+biblescraper = features.bible_scraper.BibleScraper()
+readingsscraper = features.daily_readings.DailyReadings()
+prayers = features.prayers.Prayers()
 
-client = commands.Bot(command_prefix = "+")
+#Init UI Helpers
+button_helper = ui_helper.buttons.Buttons()
 
-current_directory = os.getcwd()
+intents = discord.Intents.default()
+intents.message_content = True
+client = commands.Bot(command_prefix = "+",intents=intents)
 
 #For translation
+current_directory = os.getcwd()
 i18n.load_path.append(current_directory + '/locale')
 i18n.set('filename_format', 'yml')
+
 
 @client.event
 async def on_ready():
     print("Bot is ready")
 
+#Help command
 @client.command()
 async def ichthyshelp(ctx, *, command = ""):
 
@@ -124,10 +138,10 @@ async def ichthyshelp(ctx, *, command = ""):
 
     await ctx.send(embed=embed)
 
-
+#Read command
 @client.command()
 async def read(ctx, book: str, verse: str):
-    read_verse = ichthys.readVerse(book + verse)
+    read_verse = biblescraper.readVerse(book + verse)
     embed = discord.Embed(
     title=i18n.t("bibleVerseTitle"),
     description = read_verse,
@@ -135,19 +149,11 @@ async def read(ctx, book: str, verse: str):
     )
     await ctx.send(embed = embed)
 
-@client.command()
-async def pray(ctx, *title):
-    prayer = ichthys.readPrayer(" ".join(title[:]).lower())
-    embed = discord.Embed(
-    title=i18n.t("prayerTitle"),
-    description = prayer,
-    color=discord.Color.blue()
-    )
-    await ctx.send(embed = embed)
-
+#Daily Readings command
 @client.command()
 async def dailyreadings(ctx):
-    readings = ichthys.dailyReadings()
+
+    readings = readingsscraper.dailyReadings()
     readings_1 = discord.Embed(
     title=i18n.t("dailyReadingsTitle"),
     description=readings[0] + readings[1],
@@ -179,38 +185,24 @@ async def dailyreadings(ctx):
     else:
         embeds = [readings_1, readings_2, readings_3, readings_4]
 
-    pages = len(embeds)
-    current_page = 1
+    await Paginator.Simple(
+        PreviousButton = button_helper.prevButton(),
+        NextButton = button_helper.nextButton(),
+        timeout=42069
+    ).start(ctx, pages=embeds)
 
-    message = await ctx.send(embed= embeds[current_page-1])
+#Pray command
+@client.command()
+async def pray(ctx, *title):
+    prayer = prayers.readPrayer(" ".join(title[:]).lower())
+    embed = discord.Embed(
+    title=i18n.t("prayerTitle"),
+    description = prayer,
+    color=discord.Color.blue()
+    )
+    await ctx.send(embed = embed)
 
-    await message.add_reaction("◀️")
-    await message.add_reaction("▶️")
-
-    def check(reaction, user):
-        return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
-
-    while True:
-        try:
-            reaction, user = await client.wait_for("reaction_add", timeout=86400, check=check)
-
-            if str(reaction.emoji) == "▶️" and current_page != pages:
-                current_page += 1
-                await message.edit(embed=embeds[current_page-1])
-                await message.remove_reaction(reaction, user)
-
-            elif str(reaction.emoji) == "◀️" and current_page > 1:
-                current_page -= 1
-                await message.edit(embed=embeds[current_page-1])
-                await message.remove_reaction(reaction, user)
-
-            else:
-                await message.remove_reaction(reaction, user)
-        except asyncio.TimeoutError:
-            break
-
-
-
+#Localization command
 @client.command()
 @commands.has_permissions(administrator=True)
 async def setlocale(ctx, locale:str = "en"):
@@ -223,5 +215,6 @@ async def setlocale(ctx, locale:str = "en"):
     )
 
     await ctx.send(embed=embed)
+
 
 client.run(os.environ['BOT_TOKEN'])
