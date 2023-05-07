@@ -49,7 +49,7 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
         )
         embed.add_field(
             name="**🤖 " + i18n.t("help") + " **\n",
-            value="`+ichthyshelp read` -" + i18n.t("helpshortdesc") + " +read \n `+ichthyshelp pray` - " + i18n.t("helpshortdesc") + " +pray \n `+ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " +dailyreadings \n `+ichthyshelp setlocale`" + i18n.t("helpshortdesc") + " +setlocale",
+            value="`/ichthyshelp read` -" + i18n.t("helpshortdesc") + " /read \n `/ichthyshelp pray` - " + i18n.t("helpshortdesc") + " /pray \n `/ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " /dailyreadings \n `/ichthyshelp setlocale`" + i18n.t("helpshortdesc") + " /setlocale",
             inline=False
         )
         embed.add_field(
@@ -60,17 +60,15 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
         embed.set_footer(
             text="Made with ❤ by AndreaGon"
         )
-        #embed.add_field(name="**+ichthyshelp read**", value="Show the commands available for +read", inline=False)
-        #embed.add_field(name="**+ichthyshelp pray**", value="Show the commands available for +pray", inline=False)
-        #embed.add_field(name="**+ichthyshelp dailyreadings**", value="Show the commands available for +dailyreadings", inline=False)
+
     elif command == "read":
         embed = discord.Embed(
             title="Ichthys Read Command",
             description = i18n.t("helpreaddesc"),
             color=discord.Color.blue()
         )
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+read <bible-book><verse>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+read John 3:16", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/read <bible-book><verse>", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/read John 3:16", inline=False)
     elif command == "pray":
         embed = discord.Embed(
             title="Ichthys Pray Command",
@@ -85,7 +83,7 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
 
         prayers = prayers.keys()
         for prayer in prayers:
-            list_of_prayers += "+pray " + prayer + "\n"
+            list_of_prayers += "/pray " + prayer + "\n"
 
         list_of_prayers += "\n**Latin Prayers**\n"
         #Read list of latin prayers
@@ -94,10 +92,10 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
 
         prayers_latin = prayers_latin.keys()
         for prayer in prayers_latin:
-            list_of_prayers += "+pray " + prayer + "\n"
+            list_of_prayers += "/pray " + prayer + "\n"
 
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+pray <prayer-title>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+pray hail mary", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/pray <prayer-title>", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/pray hail mary", inline=False)
         embed.add_field(name="**" + i18n.t("listOfAvailablePrayers") + "**", value=list_of_prayers, inline=False)
 
     elif command == "dailyreadings":
@@ -106,8 +104,8 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
             description = i18n.t("helpreadingsdesc"),
             color=discord.Color.blue()
         )
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+dailyreadings", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+dailyreadings", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/dailyreadings", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/dailyreadings", inline=False)
 
     elif command == "setlocale":
         embed = discord.Embed(
@@ -125,9 +123,9 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
 
         locale_keys = available_locale.keys()
         for locale in locale_keys:
-            list_of_locale += "+setlocale " + locale + " - " + available_locale[locale] + "\n"
+            list_of_locale += "/setlocale " + locale + " - " + available_locale[locale] + "\n"
 
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+setlocale <translation>", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/setlocale <translation>", inline=False)
         embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value=list_of_locale, inline=False)
 
     else:

@@ -12,7 +12,7 @@ class Prayers:
 
         with open("prayers-latin.json") as f:
             prayers_latin = json.load(f, strict=False)
-        print(prayer)
+
         if prayer in prayers:
             return prayers[prayer]
         elif prayer in prayers_latin:
