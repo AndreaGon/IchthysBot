@@ -1,30 +1,45 @@
-import discord
+#Main Ichthys backbone
+import main.features as features
+import main.ui_helper as ui_helper
+
+#Discord.py modules
 from discord.ext import commands
-import scraper
-import json
-import os
+import Paginator
+import discord
 import DiscordUtils
 
+#Other modules
+import json
+import os
 import asyncio
-
 import i18n
 
-ichthys = scraper.Ichthys()
+#Init Features
+biblescraper = features.bible_scraper.BibleScraper()
+readingsscraper = features.daily_readings.DailyReadings()
+prayers = features.prayers.Prayers()
 
-client = commands.Bot(command_prefix = "+")
-
-current_directory = os.getcwd()
+intents = discord.Intents.default()
+client = commands.Bot(command_prefix = '/', intents = intents)
 
 #For translation
+current_directory = os.getcwd()
 i18n.load_path.append(current_directory + '/locale')
 i18n.set('filename_format', 'yml')
+
 
 @client.event
 async def on_ready():
     print("Bot is ready")
+    try:
+        synced = await client.tree.sync()
+        print(f"Synced {len(synced)} commands")
+    except Exception as e:
+        print(e)
 
-@client.command()
-async def ichthyshelp(ctx, *, command = ""):
+#Help command
+@client.tree.command(name="ichthyshelp")
+async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
 
     if command == "":
         embed = discord.Embed(
@@ -34,7 +49,7 @@ async def ichthyshelp(ctx, *, command = ""):
         )
         embed.add_field(
             name="**🤖 " + i18n.t("help") + " **\n",
-            value="`+ichthyshelp read` -" + i18n.t("helpshortdesc") + " +read \n `+ichthyshelp pray` - " + i18n.t("helpshortdesc") + " +pray \n `+ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " +dailyreadings \n `+ichthyshelp setlocale`" + i18n.t("helpshortdesc") + " +setlocale",
+            value="`/ichthyshelp read` -" + i18n.t("helpshortdesc") + " /read \n `/ichthyshelp pray` - " + i18n.t("helpshortdesc") + " /pray \n `/ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " /dailyreadings \n `/ichthyshelp setlocale`" + i18n.t("helpshortdesc") + " /setlocale",
             inline=False
         )
         embed.add_field(
@@ -45,17 +60,15 @@ async def ichthyshelp(ctx, *, command = ""):
         embed.set_footer(
             text="Made with ❤ by AndreaGon"
         )
-        #embed.add_field(name="**+ichthyshelp read**", value="Show the commands available for +read", inline=False)
-        #embed.add_field(name="**+ichthyshelp pray**", value="Show the commands available for +pray", inline=False)
-        #embed.add_field(name="**+ichthyshelp dailyreadings**", value="Show the commands available for +dailyreadings", inline=False)
+
     elif command == "read":
         embed = discord.Embed(
             title="Ichthys Read Command",
             description = i18n.t("helpreaddesc"),
             color=discord.Color.blue()
         )
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+read <bible-book><verse>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+read John 3:16", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/read <bible-book><verse>", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/read John 3:16", inline=False)
     elif command == "pray":
         embed = discord.Embed(
             title="Ichthys Pray Command",
@@ -70,7 +83,7 @@ async def ichthyshelp(ctx, *, command = ""):
 
         prayers = prayers.keys()
         for prayer in prayers:
-            list_of_prayers += "+pray " + prayer + "\n"
+            list_of_prayers += "/pray " + prayer + "\n"
 
         list_of_prayers += "\n**Latin Prayers**\n"
         #Read list of latin prayers
@@ -79,10 +92,10 @@ async def ichthyshelp(ctx, *, command = ""):
 
         prayers_latin = prayers_latin.keys()
         for prayer in prayers_latin:
-            list_of_prayers += "+pray " + prayer + "\n"
+            list_of_prayers += "/pray " + prayer + "\n"
 
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+pray <prayer-title>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+pray hail mary", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/pray <prayer-title>", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/pray hail mary", inline=False)
         embed.add_field(name="**" + i18n.t("listOfAvailablePrayers") + "**", value=list_of_prayers, inline=False)
 
     elif command == "dailyreadings":
@@ -91,8 +104,8 @@ async def ichthyshelp(ctx, *, command = ""):
             description = i18n.t("helpreadingsdesc"),
             color=discord.Color.blue()
         )
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+dailyreadings", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="+dailyreadings", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/dailyreadings", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/dailyreadings", inline=False)
 
     elif command == "setlocale":
         embed = discord.Embed(
@@ -110,9 +123,9 @@ async def ichthyshelp(ctx, *, command = ""):
 
         locale_keys = available_locale.keys()
         for locale in locale_keys:
-            list_of_locale += "+setlocale " + locale + " - " + available_locale[locale] + "\n"
+            list_of_locale += "/setlocale " + locale + " - " + available_locale[locale] + "\n"
 
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="+setlocale <translation>", inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/setlocale <translation>", inline=False)
         embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value=list_of_locale, inline=False)
 
     else:
@@ -122,32 +135,24 @@ async def ichthyshelp(ctx, *, command = ""):
             color=discord.Color.blue()
         )
 
-    await ctx.send(embed=embed)
+    await interaction.response.send_message(embed = embed)
 
-
-@client.command()
-async def read(ctx, book: str, verse: str):
-    read_verse = ichthys.readVerse(book + verse)
+#Read command
+@client.tree.command(name="read")
+async def read(interaction: discord.Interaction, book: str, verse: str):
+    read_verse = biblescraper.readVerse(book + verse)
     embed = discord.Embed(
     title=i18n.t("bibleVerseTitle"),
     description = read_verse,
     color=discord.Color.blue()
     )
-    await ctx.send(embed = embed)
+    await interaction.response.send_message(embed = embed)
 
-@client.command()
-async def pray(ctx, *title):
-    prayer = ichthys.readPrayer(" ".join(title[:]).lower())
-    embed = discord.Embed(
-    title=i18n.t("prayerTitle"),
-    description = prayer,
-    color=discord.Color.blue()
-    )
-    await ctx.send(embed = embed)
+#Daily Readings command
+@client.tree.command(name="dailyreadings")
+async def dailyreadings(interaction: discord.Interaction):
 
-@client.command()
-async def dailyreadings(ctx):
-    readings = ichthys.dailyReadings()
+    readings = readingsscraper.dailyReadings()
     readings_1 = discord.Embed(
     title=i18n.t("dailyReadingsTitle"),
     description=readings[0] + readings[1],
@@ -179,41 +184,24 @@ async def dailyreadings(ctx):
     else:
         embeds = [readings_1, readings_2, readings_3, readings_4]
 
-    pages = len(embeds)
-    current_page = 1
+    button_helper = ui_helper.prayers_view.PrayersView(embeds)
+    await interaction.response.send_message(embed=embeds[0], view=button_helper)
 
-    message = await ctx.send(embed= embeds[current_page-1])
+#Pray command
+@client.tree.command(name="pray")
+async def pray(interaction: discord.Interaction, title: str):
+    prayer = prayers.readPrayer("".join(title[:]).lower())
+    embed = discord.Embed(
+    title=i18n.t("prayerTitle"),
+    description = prayer,
+    color=discord.Color.blue()
+    )
+    await interaction.response.send_message(embed = embed)
 
-    await message.add_reaction("◀️")
-    await message.add_reaction("▶️")
-
-    def check(reaction, user):
-        return user == ctx.author and str(reaction.emoji) in ["◀️", "▶️"]
-
-    while True:
-        try:
-            reaction, user = await client.wait_for("reaction_add", timeout=86400, check=check)
-
-            if str(reaction.emoji) == "▶️" and current_page != pages:
-                current_page += 1
-                await message.edit(embed=embeds[current_page-1])
-                await message.remove_reaction(reaction, user)
-
-            elif str(reaction.emoji) == "◀️" and current_page > 1:
-                current_page -= 1
-                await message.edit(embed=embeds[current_page-1])
-                await message.remove_reaction(reaction, user)
-
-            else:
-                await message.remove_reaction(reaction, user)
-        except asyncio.TimeoutError:
-            break
-
-
-
-@client.command()
+#Localization command
+@client.tree.command(name="setlocale")
 @commands.has_permissions(administrator=True)
-async def setlocale(ctx, locale:str = "en"):
+async def setlocale(interaction: discord.Interaction, locale: str = "en"):
 
     i18n.set('locale', locale)
     embed = discord.Embed(
@@ -222,6 +210,7 @@ async def setlocale(ctx, locale:str = "en"):
     color=discord.Color.blue()
     )
 
-    await ctx.send(embed=embed)
+    await interaction.response.send_message(embed = embed)
+
 
 client.run(os.environ['BOT_TOKEN'])

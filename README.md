@@ -6,19 +6,19 @@ Please go to [Top.gg](https://top.gg/bot/874478554505687100?s=0d2659a00a19a) to 
 
 # Usage ℹ️
 ### Help Commands
-- `+ichthyshelp` - Show all available help commands
-- `+ichthyshelp read` - Show commands available for +read
-- `+ichthyshelp pray` - Show commands available for +pray
-- `+ichthyshelp dailyreadings` - Show commands available for +dailyreadings
+- `/ichthyshelp` - Show all available help commands
+- `/ichthyshelp read` - Show commands available for /read
+- `/ichthyshelp pray` - Show commands available for /pray
+- `/ichthyshelp dailyreadings` - Show commands available for /dailyreadings
 
 ### Read Commands
-- `+read <bible-book><verse>` - Returns a bible verse based on the user's request
+- `/read <bible-book><verse>` - Returns a bible verse based on the user's request
 
 ### Pray Commands
-- `+pray <prayer-title>` - Returns common Catholic prayers
+- `/pray <prayer-title>` - Returns common Catholic prayers
 
 ### Daily Readings Commands
-- `+dailyreadings` - Returns today's bible readings
+- `/dailyreadings` - Returns today's bible readings
 
 # Contrbuting 🔧
 ### Installation from Github
