@@ -19,12 +19,8 @@ biblescraper = features.bible_scraper.BibleScraper()
 readingsscraper = features.daily_readings.DailyReadings()
 prayers = features.prayers.Prayers()
 
-#Init UI Helpers
-button_helper = ui_helper.buttons.Buttons()
-
 intents = discord.Intents.default()
-intents.message_content = True
-client = commands.Bot(command_prefix = "+",intents=intents)
+client = commands.Bot(command_prefix = '/', intents = intents)
 
 #For translation
 current_directory = os.getcwd()
@@ -35,10 +31,15 @@ i18n.set('filename_format', 'yml')
 @client.event
 async def on_ready():
     print("Bot is ready")
+    try:
+        synced = await client.tree.sync()
+        print(f"Synced {len(synced)} commands")
+    except Exception as e:
+        print(e)
 
 #Help command
-@client.command()
-async def ichthyshelp(ctx, *, command = ""):
+@client.tree.command(name="ichthyshelp")
+async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
 
     if command == "":
         embed = discord.Embed(
@@ -136,22 +137,22 @@ async def ichthyshelp(ctx, *, command = ""):
             color=discord.Color.blue()
         )
 
-    await ctx.send(embed=embed)
+    await interaction.response.send_message(embed = embed)
 
 #Read command
-@client.command()
-async def read(ctx, book: str, verse: str):
+@client.tree.command(name="read")
+async def read(interaction: discord.Interaction, book: str, verse: str):
     read_verse = biblescraper.readVerse(book + verse)
     embed = discord.Embed(
     title=i18n.t("bibleVerseTitle"),
     description = read_verse,
     color=discord.Color.blue()
     )
-    await ctx.send(embed = embed)
+    await interaction.response.send_message(embed = embed)
 
 #Daily Readings command
-@client.command()
-async def dailyreadings(ctx):
+@client.tree.command(name="dailyreadings")
+async def dailyreadings(interaction: discord.Interaction):
 
     readings = readingsscraper.dailyReadings()
     readings_1 = discord.Embed(
@@ -185,27 +186,24 @@ async def dailyreadings(ctx):
     else:
         embeds = [readings_1, readings_2, readings_3, readings_4]
 
-    await Paginator.Simple(
-        PreviousButton = button_helper.prevButton(),
-        NextButton = button_helper.nextButton(),
-        timeout=42069
-    ).start(ctx, pages=embeds)
+    button_helper = ui_helper.prayers_view.PrayersView(embeds)
+    await interaction.response.send_message(embed=embeds[0], view=button_helper)
 
 #Pray command
-@client.command()
-async def pray(ctx, *title):
-    prayer = prayers.readPrayer(" ".join(title[:]).lower())
+@client.tree.command(name="pray")
+async def pray(interaction: discord.Interaction, title: str):
+    prayer = prayers.readPrayer("".join(title[:]).lower())
     embed = discord.Embed(
     title=i18n.t("prayerTitle"),
     description = prayer,
     color=discord.Color.blue()
     )
-    await ctx.send(embed = embed)
+    await interaction.response.send_message(embed = embed)
 
 #Localization command
-@client.command()
+@client.tree.command(name="setlocale")
 @commands.has_permissions(administrator=True)
-async def setlocale(ctx, locale:str = "en"):
+async def setlocale(interaction: discord.Interaction, locale: str = "en"):
 
     i18n.set('locale', locale)
     embed = discord.Embed(
@@ -214,7 +212,7 @@ async def setlocale(ctx, locale:str = "en"):
     color=discord.Color.blue()
     )
 
-    await ctx.send(embed=embed)
+    await interaction.response.send_message(embed = embed)
 
 
 client.run(os.environ['BOT_TOKEN'])

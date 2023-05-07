@@ -1,1 +1,1 @@
-from . import buttons
+from . import prayers_view
