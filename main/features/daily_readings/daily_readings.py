@@ -4,6 +4,7 @@ import json
 import datetime
 import pytz
 import os
+import threading
 
 class DailyReadings:
     def __init__(self):
@@ -26,3 +27,5 @@ class DailyReadings:
         for reading in range(len(readings_content)):
             readings_info.append(readings_content[reading].text)
         return readings_info
+
+

@@ -4,6 +4,7 @@ import main.ui_helper as ui_helper
 
 #Discord.py modules
 from discord.ext import commands
+from discord.ext import tasks
 import Paginator
 import discord
 import DiscordUtils
@@ -20,15 +21,13 @@ readingsscraper = features.daily_readings.DailyReadings()
 prayers = features.prayers.Prayers()
 liturgical_calendar = features.liturgical_calendar.LiturgicalCalendar()
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 client = commands.Bot(command_prefix = '/', intents = intents)
 
 #For translation
 current_directory = os.getcwd()
 i18n.load_path.append(current_directory + '/locale')
 i18n.set('filename_format', 'yml')
-
-
 @client.event
 async def on_ready():
     print("Bot is ready")
@@ -37,6 +36,7 @@ async def on_ready():
         print(f"Synced {len(synced)} commands")
     except Exception as e:
         print(e)
+
 
 #Help command
 @client.tree.command(name="ichthyshelp")
@@ -164,47 +164,54 @@ async def read(interaction: discord.Interaction, book: str, verse: str):
 
 #Daily Readings command
 @client.tree.command(name="dailyreadings")
-async def dailyreadings(interaction: discord.Interaction):
+async def dailyreadings(interaction: discord.Interaction, enableauto: bool = False):
 
-    readings = readingsscraper.dailyReadings()
-    readings_1 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
-    description=readings[0] + readings[1],
-    color=discord.Color.blue()
-    )
-    readings_2 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
-    description=readings[2],
-    color=discord.Color.blue()
-    )
-    readings_3 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
-    description=readings[3],
-    color=discord.Color.blue()
-    )
-    readings_4 = discord.Embed(
-    title=i18n.t("dailyReadingsTitle"),
-    description=readings[4],
-    color=discord.Color.blue()
-    )
+    if auto is False:
 
-    if len(readings) == 6:
-        readings_5 = discord.Embed(
+        readings = readingsscraper.dailyReadings()
+        readings_1 = discord.Embed(
         title=i18n.t("dailyReadingsTitle"),
-        description=readings[5],
+        description=readings[0] + readings[1],
         color=discord.Color.blue()
         )
-        embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
+        readings_2 = discord.Embed(
+        title=i18n.t("dailyReadingsTitle"),
+        description=readings[2],
+        color=discord.Color.blue()
+        )
+        readings_3 = discord.Embed(
+        title=i18n.t("dailyReadingsTitle"),
+        description=readings[3],
+        color=discord.Color.blue()
+        )
+        readings_4 = discord.Embed(
+        title=i18n.t("dailyReadingsTitle"),
+        description=readings[4],
+        color=discord.Color.blue()
+        )
+
+        if len(readings) == 6:
+            readings_5 = discord.Embed(
+            title=i18n.t("dailyReadingsTitle"),
+            description=readings[5],
+            color=discord.Color.blue()
+            )
+            embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
+        else:
+            embeds = [readings_1, readings_2, readings_3, readings_4]
+
+        button_helper = ui_helper.prayers_view.PrayersView(embeds)
+
+        readings_1.set_footer(
+            text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
+        )
+
+        await interaction.response.send_message(embed=embeds[0], view=button_helper)
+    
     else:
-        embeds = [readings_1, readings_2, readings_3, readings_4]
-
-    button_helper = ui_helper.prayers_view.PrayersView(embeds)
-
-    readings_1.set_footer(
-        text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
-    )
-
-    await interaction.response.send_message(embed=embeds[0], view=button_helper)
+        if not automaticDailyReadings.is_running():
+            automaticDailyReadings.start() #If the task is not already running, start it.
+            print("Good night task started")
 
 #Pray command
 @client.tree.command(name="pray")
@@ -278,5 +285,55 @@ async def calendar(interaction: discord.Interaction):
     )    
 
     await interaction.followup.send(embed = embed)
+
+
+
+## BACKGROUND TASKS ##
+
+@tasks.loop(seconds=10) #Create the task
+async def automaticDailyReadings():
+    
+
+    channel = client.get_channel(1063115502924345347)
+    readings = readingsscraper.dailyReadings()
+    readings_1 = discord.Embed(
+    title=i18n.t("dailyReadingsTitle"),
+    description=readings[0] + readings[1],
+    color=discord.Color.blue()
+    )
+    readings_2 = discord.Embed(
+    title=i18n.t("dailyReadingsTitle"),
+    description=readings[2],
+    color=discord.Color.blue()
+    )
+    readings_3 = discord.Embed(
+    title=i18n.t("dailyReadingsTitle"),
+    description=readings[3],
+    color=discord.Color.blue()
+    )
+    readings_4 = discord.Embed(
+    title=i18n.t("dailyReadingsTitle"),
+    description=readings[4],
+    color=discord.Color.blue()
+    )
+
+    if len(readings) == 6:
+        readings_5 = discord.Embed(
+        title=i18n.t("dailyReadingsTitle"),
+        description=readings[5],
+        color=discord.Color.blue()
+        )
+        embeds = [readings_1, readings_2, readings_3, readings_4, readings_5]
+    else:
+        embeds = [readings_1, readings_2, readings_3, readings_4]
+
+    button_helper = ui_helper.prayers_view.PrayersView(embeds)
+
+    readings_1.set_footer(
+        text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
+    )
+
+    await channel.send(embed=embeds[0], view=button_helper)
+
 
 client.run(os.environ['BOT_TOKEN'])
