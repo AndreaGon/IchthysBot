@@ -10,6 +10,7 @@ Please go to [Top.gg](https://top.gg/bot/874478554505687100?s=0d2659a00a19a) to 
 - `/ichthyshelp read` - Show commands available for /read
 - `/ichthyshelp pray` - Show commands available for /pray
 - `/ichthyshelp dailyreadings` - Show commands available for /dailyreadings
+- `/ichthyshelp calendar` - Show commands available for /calendar
 
 ### Read Commands
 - `/read <bible-book><verse>` - Returns a bible verse based on the user's request
@@ -19,6 +20,9 @@ Please go to [Top.gg](https://top.gg/bot/874478554505687100?s=0d2659a00a19a) to 
 
 ### Daily Readings Commands
 - `/dailyreadings` - Returns today's bible readings
+
+### Calendar Commands
+- `/calendar` -  Returns today's Liturgical Calendar information
 
 # Contrbuting 🔧
 ### Installation from Github
