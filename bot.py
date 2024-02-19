@@ -18,6 +18,7 @@ import i18n
 biblescraper = features.bible_scraper.BibleScraper()
 readingsscraper = features.daily_readings.DailyReadings()
 prayers = features.prayers.Prayers()
+liturgical_calendar = features.liturgical_calendar.LiturgicalCalendar()
 
 intents = discord.Intents.default()
 client = commands.Bot(command_prefix = '/', intents = intents)
@@ -49,7 +50,7 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
         )
         embed.add_field(
             name="**🤖 " + i18n.t("help") + " **\n",
-            value="`/ichthyshelp read` -" + i18n.t("helpshortdesc") + " /read \n `/ichthyshelp pray` - " + i18n.t("helpshortdesc") + " /pray \n `/ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " /dailyreadings \n `/ichthyshelp setlocale`" + i18n.t("helpshortdesc") + " /setlocale",
+            value="`/ichthyshelp read` -" + i18n.t("helpshortdesc") + " /read \n `/ichthyshelp pray` - " + i18n.t("helpshortdesc") + " /pray \n `/ichthyshelp dailyreadings` - "+ i18n.t("helpshortdesc") + " /dailyreadings \n `/ichthyshelp calendar` - " + i18n.t("helpshortdesc") + " /calendar",
             inline=False
         )
         embed.add_field(
@@ -107,26 +108,35 @@ async def ichthyshelp(interaction: discord.Interaction, command: str = ""):
         embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/dailyreadings", inline=False)
         embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/dailyreadings", inline=False)
 
-    elif command == "setlocale":
+    # elif command == "setlocale":
+    #     embed = discord.Embed(
+    #         title="Ichthys Set Locale Command",
+    #         description = i18n.t("helptranslationsdesc"),
+    #         color=discord.Color.blue()
+    #     )
+
+    #     list_of_locale = ""
+
+
+    #     #Read list of latin prayers
+    #     with open("locale/available_locale.json") as f:
+    #         available_locale = json.load(f, strict=False)
+
+    #     locale_keys = available_locale.keys()
+    #     for locale in locale_keys:
+    #         list_of_locale += "/setlocale " + locale + " - " + available_locale[locale] + "\n"
+
+    #     embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/setlocale <translation>", inline=False)
+    #     embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value=list_of_locale, inline=False)
+    
+    elif command == "calendar":
         embed = discord.Embed(
-            title="Ichthys Set Locale Command",
-            description = i18n.t("helptranslationsdesc"),
+            title="Ichthys Calendar Command",
+            description = i18n.t("helpcalendardesc"),
             color=discord.Color.blue()
         )
-
-        list_of_locale = ""
-
-
-        #Read list of latin prayers
-        with open("locale/available_locale.json") as f:
-            available_locale = json.load(f, strict=False)
-
-        locale_keys = available_locale.keys()
-        for locale in locale_keys:
-            list_of_locale += "/setlocale " + locale + " - " + available_locale[locale] + "\n"
-
-        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/setlocale <translation>", inline=False)
-        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value=list_of_locale, inline=False)
+        embed.add_field(name="**" + i18n.t("commandStructure") + "**", value="/calendar", inline=False)
+        embed.add_field(name="**" + i18n.t("exampleCommand") + "**", value="/calendar", inline=False)
 
     else:
         embed = discord.Embed(
@@ -145,6 +155,10 @@ async def read(interaction: discord.Interaction, book: str, verse: str):
     title=i18n.t("bibleVerseTitle"),
     description = read_verse,
     color=discord.Color.blue()
+    )
+
+    embed.set_footer(
+        text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
     )
     await interaction.response.send_message(embed = embed)
 
@@ -185,6 +199,11 @@ async def dailyreadings(interaction: discord.Interaction):
         embeds = [readings_1, readings_2, readings_3, readings_4]
 
     button_helper = ui_helper.prayers_view.PrayersView(embeds)
+
+    readings_1.set_footer(
+        text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
+    )
+
     await interaction.response.send_message(embed=embeds[0], view=button_helper)
 
 #Pray command
@@ -196,21 +215,68 @@ async def pray(interaction: discord.Interaction, title: str):
     description = prayer,
     color=discord.Color.blue()
     )
-    await interaction.response.send_message(embed = embed)
 
-#Localization command
-@client.tree.command(name="setlocale")
-@commands.has_permissions(administrator=True)
-async def setlocale(interaction: discord.Interaction, locale: str = "en"):
-
-    i18n.set('locale', locale)
-    embed = discord.Embed(
-    title=i18n.t("settingLocaleLang"),
-    description= i18n.t("botLanguageSet") + " " + locale,
-    color=discord.Color.blue()
+    embed.set_footer(
+        text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
     )
 
     await interaction.response.send_message(embed = embed)
 
+#Localization command
+# @client.tree.command(name="setlocale")
+# @commands.has_permissions(administrator=True)
+# async def setlocale(interaction: discord.Interaction, locale: str = "en"):
+
+#     i18n.set('locale', locale)
+#     embed = discord.Embed(
+#     title=i18n.t("settingLocaleLang"),
+#     description= i18n.t("botLanguageSet") + " " + locale,
+#     color=discord.Color.blue()
+#     )
+
+#     embed.set_footer(
+#         text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
+#     )
+
+#     await interaction.response.send_message(embed = embed)
+
+#Liturgical Calendar command
+@client.tree.command(name="calendar")
+@commands.has_permissions(administrator=True)
+async def calendar(interaction: discord.Interaction):
+    await interaction.response.defer()
+    calendar = liturgical_calendar.showCalendar()
+
+    embed = discord.Embed(
+        title="Liturgical Calendar",
+        description= "",
+        color=discord.Color.blue()
+    )
+    embed.add_field(
+        name="**Date**\n",
+        value=calendar[0],
+        inline=True
+    )
+    embed.add_field(
+        name="**Season**\n",
+        value=calendar[1],
+        inline=True
+    )
+    embed.add_field(
+        name="**Weekday**\n",
+        value=calendar[2],
+        inline=True
+    )
+    embed.add_field(
+        name="**Celebrations**\n",
+        value=calendar[3],
+        inline=False
+    )
+
+    embed.set_footer(
+        text="Made with ❤ by AndreaGon" + "\nIf you like this bot, please consider buying me a coffee at https://www.buymeacoffee.com/andreagon"
+    )    
+
+    await interaction.followup.send(embed = embed)
 
 client.run(os.environ['BOT_TOKEN'])

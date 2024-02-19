@@ -6,6 +6,7 @@ en:
   helppraydesc: Returns common Catholic prayers
   helpreadingsdesc: Returns today's bible readings
   helptranslationsdesc: Sets the bot's language
+  helpcalendardesc: Returns the Liturgical Calendar information
   links: Links
 
   translations: List of all Available Translations
