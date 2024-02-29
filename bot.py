@@ -8,6 +8,10 @@ import Paginator
 import discord
 import DiscordUtils
 
+from discord.ext import tasks
+
+import topgg
+
 #Other modules
 import json
 import os
@@ -29,12 +33,23 @@ i18n.load_path.append(current_directory + '/locale')
 i18n.set('filename_format', 'yml')
 
 
+
+
 @client.event
 async def on_ready():
     print("Bot is ready")
     try:
+        #Automatically update server count the bot is in at Top.gg website
+        dbl_token = os.environ['TOPGG_TOKEN']  # set this to your bot's Top.gg token
+        client.topggpy = topgg.DBLClient(client, dbl_token, autopost=True, post_shard_count=True)
+        print(
+            f"Posted server count ({client.topggpy.guild_count}), shard count ({client.shard_count})"
+        )
+
+        #Sync bot commands
         synced = await client.tree.sync()
         print(f"Synced {len(synced)} commands")
+
     except Exception as e:
         print(e)
 
